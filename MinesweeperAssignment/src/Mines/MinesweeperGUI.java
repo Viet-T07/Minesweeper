@@ -30,8 +30,12 @@ public class MinesweeperGUI extends JFrame implements KeyListener {
     private JLabel placeHolder2;
     private JLabel placeHolder3;
     private JLabel placeHolder4;
+
+    //Setting an instance to output the correct message displaying the state of the game
     private static MinesweeperGUI instance = null;
-    
+
+    //Making a 
+    private int[][] gameBoard;
     private boolean DEBUG_MODE;
 
     public MinesweeperGUI() {
@@ -41,16 +45,9 @@ public class MinesweeperGUI extends JFrame implements KeyListener {
 
         //Initialize JLabels and the start button
         startButton = new JButton("Start Game");
-        gamesWon = new JLabel("Won");
-        gamesLost = new JLabel("Lost");
-        gameStatus = new JLabel("Progress");
-
-        //Creating new JLabels to format the main menu
-        placeHolder = new JLabel();
-        placeHolder1 = new JLabel();
-        placeHolder2 = new JLabel();
-        placeHolder3 = new JLabel();
-        placeHolder4 = new JLabel();
+        gamesWon = new JLabel(" Games Won");
+        gamesLost = new JLabel(" Games Lost");
+        gameStatus = new JLabel(" Message");
 
         JPanel start = new JPanel();
         start.add(startButton);
@@ -59,16 +56,13 @@ public class MinesweeperGUI extends JFrame implements KeyListener {
         Container pane = getContentPane();
 
         //Adding all the elements to the pane
-        pane.setLayout(new GridLayout(3, 3));
-        pane.add(placeHolder);
-        pane.add(placeHolder1);
-        pane.add(placeHolder2);
-        pane.add(gamesWon);
+        pane.setLayout(new GridLayout(4, 1));
+
         pane.add(startButton);
+        pane.add(gamesWon);
         pane.add(gamesLost);
-        pane.add(placeHolder3);
+
         pane.add(gameStatus);
-        pane.add(placeHolder4);
 
         startButton.addActionListener(new ActionListener() {
             @Override
@@ -85,10 +79,15 @@ public class MinesweeperGUI extends JFrame implements KeyListener {
 
     public MinesweeperGUI(String title, int width, int height) {
         super(title);
+
+        //Set size of the window
         setSize(width, height);
 
+        //Creating a container for the game board
         Container pane = getContentPane();
         pane.setLayout(new GridLayout(8, 8));
+
+        board();
 
         for (int i = 0; i < 8; i++) {
             for (int j = 0; j < 8; j++) {
@@ -96,6 +95,78 @@ public class MinesweeperGUI extends JFrame implements KeyListener {
                 JButton button = new JButton();
                 pane.add(button);
 
+                if (gameBoard[i][j] == -1 /*&& DEBUG_MODE == true*/) {
+                    button.setText("Mine");
+                }
+                if (gameBoard[i][j] != -1) {
+                    button.setText(String.valueOf(gameBoard[i][j]));
+                }
+
+            }
+        }
+
+    }
+
+    public void board() {
+
+        //Creating a gameboard to determine whether the outcome of the game
+        gameBoard = new int[8][8];
+
+        //Initialize the variable that will increment if there are  mines around the tile
+        //Initialize the loop variable
+        int k = 0;
+        //Add 10 mines to the gameBoard
+        while (k < 10) {
+
+            int xCoordinate = (int) (Math.random() * 8);
+            int yCoordinate = (int) (Math.random() * 8);
+
+            if (gameBoard[xCoordinate][yCoordinate] == 0) {
+                gameBoard[xCoordinate][yCoordinate] = -1;
+                k++;
+            } else {
+                k += 0;
+            }
+
+        }
+
+        for (int i = 0; i < 8; i++) {
+            for (int j = 0; j < 8; j++) {
+
+                if (gameBoard[i][j] == -1) {
+                    if (j - 1 >= 0 &&  gameBoard[i][j-1] != -1) {
+                        
+                        gameBoard[i][j-1] += 1;
+                        
+                    }
+                    if( j + 1 <= 7 && gameBoard[i][j+1] != -1){
+                        gameBoard[i][j+1] += 1;
+                    }
+                    
+                    
+                    if(i + 1 <= 7 && gameBoard[i+1][j] != -1){
+                        gameBoard[i+1][j] += 1;
+                        if( j-1 >=0 && gameBoard[i+1][j-1] != -1){
+                            
+                            gameBoard[i+1][j-1] += 1;
+                        }
+                        if(j + 1 <=7  && gameBoard[i+1][j+1] != -1){
+                            gameBoard[i+1][j+1] += 1;
+                        }
+                    }
+                    
+                    
+                    if(i - 1 >= 0 && gameBoard[i-1][j] != -1){
+                        gameBoard[i-1][j] += 1;
+                        if(j-1 >=0 && gameBoard[i-1][j-1] != -1){
+                            
+                            gameBoard[i-1][j-1] += 1;
+                        }
+                        if(j + 1 <= 7 && gameBoard[i+1][j+1] != -1){
+                            gameBoard[i-1][j+1] += 1;
+                       }
+                    }
+                }
             }
         }
 

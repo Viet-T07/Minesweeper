@@ -9,9 +9,12 @@ package Mines;
  *
  * @author cstuser
  */
-public class Main {
+public class Main extends MinesweeperGUI {
+  
     public static void main(String[] args) {
+
         MinesweeperGUI window = new MinesweeperGUI();
         window.setVisible(true);
+ 
     }
 }

@@ -24,30 +24,31 @@ public class MinesweeperGUI extends JFrame implements KeyListener {
     private JLabel gamesLost;
     private JLabel gameStatus;
 
-    //Declaring JLabels to format the main menu
-    private JLabel placeHolder;
-    private JLabel placeHolder1;
-    private JLabel placeHolder2;
-    private JLabel placeHolder3;
-    private JLabel placeHolder4;
-
     //Setting an instance to output the correct message displaying the state of the game
     private static MinesweeperGUI instance = null;
 
     //Making a 
     private int[][] gameBoard;
-    private boolean DEBUG_MODE;
+    boolean DEBUG_MODE;
+    
+    private static JMenuBar menuBar;
+    private JCheckBoxMenuItem cbMenuItem;
+    private JMenu menu;
+    
 
     public MinesweeperGUI() {
-        super("Title");
+        super("MineSweeper");
         //Make the start menu window 400 x 400
         setSize(400, 400);
-
+        
+        
+        menu();
+        
         //Initialize JLabels and the start button
         startButton = new JButton("Start Game");
         gamesWon = new JLabel(" Games Won");
         gamesLost = new JLabel(" Games Lost");
-        gameStatus = new JLabel(" Message");
+        gameStatus = new JLabel(" No instance found");
 
         JPanel start = new JPanel();
         start.add(startButton);
@@ -61,20 +62,28 @@ public class MinesweeperGUI extends JFrame implements KeyListener {
         pane.add(startButton);
         pane.add(gamesWon);
         pane.add(gamesLost);
-
         pane.add(gameStatus);
+        
 
         startButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 MinesweeperGUI window = new MinesweeperGUI("Minesweeper", 800, 800);
                 window.setVisible(true);
+                displayMessage("Game In Progress");
+                
+                
+               
+                
             }
 
         });
-
+        
+        
         instance = this;
-
+        setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+        
+        
     }
 
     public MinesweeperGUI(String title, int width, int height) {
@@ -95,17 +104,51 @@ public class MinesweeperGUI extends JFrame implements KeyListener {
                 JButton button = new JButton();
                 pane.add(button);
 
-                if (gameBoard[i][j] == -1 /*&& DEBUG_MODE == true*/) {
+                if (gameBoard[i][j] == -1 && DEBUG_MODE == true) {
                     button.setText("Mine");
                 }
-                if (gameBoard[i][j] != -1) {
-                    button.setText(String.valueOf(gameBoard[i][j]));
-                }
+//                if (gameBoard[i][j] != -1) {
+//                    button.setText(String.valueOf(gameBoard[i][j]));
+//                }
 
             }
         }
+        
+        setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+        
+        displayMessage("No game open");
+       
 
     }
+    
+    
+    public void menu(){
+        menuBar = new JMenuBar();
+        
+        menu = new JMenu("Options");
+        menu.setMnemonic(KeyEvent.VK_A);
+        menuBar.add(menu);
+        
+        cbMenuItem = new JCheckBoxMenuItem("DEBUG_MODE");
+        cbMenuItem.setMnemonic(KeyEvent.VK_C);
+        
+        cbMenuItem.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if(DEBUG_MODE = true){
+                    DEBUG_MODE = false;
+                }
+                else{
+                    DEBUG_MODE = true;
+                }
+            }
+        }
+        );
+        menu.add(cbMenuItem);
+    }
+    
+    
+    
 
     public void board() {
 
@@ -118,59 +161,43 @@ public class MinesweeperGUI extends JFrame implements KeyListener {
         //Add 10 mines to the gameBoard
         while (k < 10) {
 
-            int xCoordinate = (int) (Math.random() * 8);
-            int yCoordinate = (int) (Math.random() * 8);
+            int xCoordinate = (int) (Math.random() * 7);
+            int yCoordinate = (int) (Math.random() * 7);
 
             if (gameBoard[xCoordinate][yCoordinate] == 0) {
                 gameBoard[xCoordinate][yCoordinate] = -1;
                 k++;
-            } else {
-                k += 0;
             }
 
         }
 
         for (int i = 0; i < 8; i++) {
             for (int j = 0; j < 8; j++) {
-
                 if (gameBoard[i][j] == -1) {
-                    if (j - 1 >= 0 &&  gameBoard[i][j-1] != -1) {
-                        
-                        gameBoard[i][j-1] += 1;
-                        
-                    }
-                    if( j + 1 <= 7 && gameBoard[i][j+1] != -1){
-                        gameBoard[i][j+1] += 1;
-                    }
-                    
-                    
-                    if(i + 1 <= 7 && gameBoard[i+1][j] != -1){
-                        gameBoard[i+1][j] += 1;
-                        if( j-1 >=0 && gameBoard[i+1][j-1] != -1){
-                            
-                            gameBoard[i+1][j-1] += 1;
+                    for (int i1 = (i - 1); i1 < (i + 2); i1++) {
+                        if (i1 >= 0 && i1 <= 7) {
+                            for (int j1 = (j - 1); j1 < (j + 2); j1++) {
+                                if (j1 > 0 && j1 < 7) {
+                                    if (gameBoard[i1][j1] != -1) {
+                                        gameBoard[i1][j1] += 1;
+                                    }
+                                }
+                            }
                         }
-                        if(j + 1 <=7  && gameBoard[i+1][j+1] != -1){
-                            gameBoard[i+1][j+1] += 1;
-                        }
-                    }
-                    
-                    
-                    if(i - 1 >= 0 && gameBoard[i-1][j] != -1){
-                        gameBoard[i-1][j] += 1;
-                        if(j-1 >=0 && gameBoard[i-1][j-1] != -1){
-                            
-                            gameBoard[i-1][j-1] += 1;
-                        }
-                        if(j + 1 <= 7 && gameBoard[i+1][j+1] != -1){
-                            gameBoard[i-1][j+1] += 1;
-                       }
                     }
                 }
             }
         }
 
     }
+    
+    public static void displayMessage(String message){
+        if(instance != null){
+            instance.gameStatus.setText(message);
+        }
+    }
+   
+    
 
     @Override
     public void keyTyped(KeyEvent ke) {

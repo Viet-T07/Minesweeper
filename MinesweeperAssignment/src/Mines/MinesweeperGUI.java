@@ -30,20 +30,20 @@ public class MinesweeperGUI extends JFrame implements KeyListener {
     //Making a 
     private int[][] gameBoard;
     boolean DEBUG_MODE;
-    
+
+    private JButton[][] mineClick = new JButton[8][8];
+
     private static JMenuBar menuBar;
     private JCheckBoxMenuItem cbMenuItem;
     private JMenu menu;
-    
 
     public MinesweeperGUI() {
         super("MineSweeper");
         //Make the start menu window 400 x 400
         setSize(400, 400);
-        
-        
+
         menu();
-        
+
         //Initialize JLabels and the start button
         startButton = new JButton("Start Game");
         gamesWon = new JLabel(" Games Won");
@@ -63,7 +63,6 @@ public class MinesweeperGUI extends JFrame implements KeyListener {
         pane.add(gamesWon);
         pane.add(gamesLost);
         pane.add(gameStatus);
-        
 
         startButton.addActionListener(new ActionListener() {
             @Override
@@ -71,19 +70,14 @@ public class MinesweeperGUI extends JFrame implements KeyListener {
                 MinesweeperGUI window = new MinesweeperGUI("Minesweeper", 800, 800);
                 window.setVisible(true);
                 displayMessage("Game In Progress");
-                
-                
-               
-                
+
             }
 
         });
-        
-        
+
         instance = this;
         setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-        
-        
+
     }
 
     public MinesweeperGUI(String title, int width, int height) {
@@ -104,41 +98,57 @@ public class MinesweeperGUI extends JFrame implements KeyListener {
                 JButton button = new JButton();
                 pane.add(button);
 
-                if (gameBoard[i][j] == -1 && DEBUG_MODE == true) {
+                if (gameBoard[i][j] == -1 && DEBUG_MODE) {
                     button.setText("Mine");
                 }
+                int i1 = i;
+                int j1 = j;
+                button.addActionListener((ActionEvent e) -> {
+                    if (gameBoard[i1][j1] != -1 && gameBoard[i1][j1] != 0) {
+                        button.setText(String.valueOf(gameBoard[i1][j1]));
+                    } else if (gameBoard[i1][j1] == -1) {
+                        button.setText("Mine");
+                        for (int h = 0; h < 8; h++) {
+                            for (int k = 0; k < 8; k++) {
+                                if (mineClick[h][k].getText().isEmpty()) {
+                                    if (gameBoard[h][k] == -1) {
+                                        mineClick[h][k].setText("Mine");
+                                    }
+                                    mineClick[h][k].setEnabled(false);
+                                }
+                            }
+                        }
+                    }
+                });
+                mineClick[i][j] = button;
 //                if (gameBoard[i][j] != -1) {
 //                    button.setText(String.valueOf(gameBoard[i][j]));
 //                }
-
             }
         }
-        
+
         setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-        
+
         displayMessage("No game open");
-       
 
     }
-    
-    
-    public void menu(){
+
+    public void menu() {
         menuBar = new JMenuBar();
-        
+
         menu = new JMenu("Options");
         menu.setMnemonic(KeyEvent.VK_A);
         menuBar.add(menu);
-        
+
         cbMenuItem = new JCheckBoxMenuItem("DEBUG_MODE");
         cbMenuItem.setMnemonic(KeyEvent.VK_C);
-        
+
         cbMenuItem.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if(DEBUG_MODE = true){
+                if (DEBUG_MODE = true) {
                     DEBUG_MODE = false;
-                }
-                else{
+                } else {
                     DEBUG_MODE = true;
                 }
             }
@@ -146,9 +156,6 @@ public class MinesweeperGUI extends JFrame implements KeyListener {
         );
         menu.add(cbMenuItem);
     }
-    
-    
-    
 
     public void board() {
 
@@ -177,7 +184,7 @@ public class MinesweeperGUI extends JFrame implements KeyListener {
                     for (int i1 = (i - 1); i1 < (i + 2); i1++) {
                         if (i1 >= 0 && i1 <= 7) {
                             for (int j1 = (j - 1); j1 < (j + 2); j1++) {
-                                if (j1 > 0 && j1 < 7) {
+                                if (j1 >= 0 && j1 <= 7) {
                                     if (gameBoard[i1][j1] != -1) {
                                         gameBoard[i1][j1] += 1;
                                     }
@@ -190,14 +197,12 @@ public class MinesweeperGUI extends JFrame implements KeyListener {
         }
 
     }
-    
-    public static void displayMessage(String message){
-        if(instance != null){
+
+    public static void displayMessage(String message) {
+        if (instance != null) {
             instance.gameStatus.setText(message);
         }
     }
-   
-    
 
     @Override
     public void keyTyped(KeyEvent ke) {

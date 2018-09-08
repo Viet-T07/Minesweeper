@@ -28,8 +28,11 @@ public class MinesweeperGUI extends JFrame implements KeyListener {
     private static MinesweeperGUI instance = null;
 
     //Making a 
+    private int winCounter;
+    private int lostCounter;
     private int[][] gameBoard;
-    boolean DEBUG_MODE;
+    private boolean DEBUG_MODE;
+    private boolean ctrlPressed = false;
 
     private JButton[][] mineClick = new JButton[8][8];
 
@@ -46,8 +49,8 @@ public class MinesweeperGUI extends JFrame implements KeyListener {
 
         //Initialize JLabels and the start button
         startButton = new JButton("Start Game");
-        gamesWon = new JLabel(" Games Won");
-        gamesLost = new JLabel(" Games Lost");
+        gamesWon = new JLabel(" Games Won :  " + winCounter);
+        gamesLost = new JLabel(" Games Lost :  " + lostCounter);
         gameStatus = new JLabel(" No instance found");
 
         JPanel start = new JPanel();
@@ -103,10 +106,30 @@ public class MinesweeperGUI extends JFrame implements KeyListener {
                 }
                 int i1 = i;
                 int j1 = j;
+                
+                
+                setFocusable(true);
+                addKeyListener(this);
+                
+                button.addKeyListener(this);
+                
+                
+                
                 button.addActionListener((ActionEvent e) -> {
-                    if (gameBoard[i1][j1] != -1 && gameBoard[i1][j1] != 0) {
+                    
+                    if(ctrlPressed){
+                        button.setText("Mine!");
+                    }
+                    else if(ctrlPressed && button.getText() != null){
+                        button.setText("");
+                    }
+                    
+                    
+                    
+                    else if (gameBoard[i1][j1] != -1 && gameBoard[i1][j1] != 0) {
                         button.setText(String.valueOf(gameBoard[i1][j1]));
-                    } else if (gameBoard[i1][j1] == -1) {
+                    } 
+                    else if (gameBoard[i1][j1] == -1) {
                         button.setText("Mine");
                         for (int h = 0; h < 8; h++) {
                             for (int k = 0; k < 8; k++) {
@@ -115,10 +138,26 @@ public class MinesweeperGUI extends JFrame implements KeyListener {
                                         mineClick[h][k].setText("Mine");
                                     }
                                     mineClick[h][k].setEnabled(false);
+                                    lostCounter++;
                                 }
                             }
                         }
-                    }
+                    } 
+//                    else if (gameBoard[i1][j1] == 0) {
+//                        button.setText("");
+//                        for (int i2 = (i1 - 1); i2 < (i1 + 2); i2++) {
+//                            if (i2 >= 0 && i2 <= 7) {
+//                                for (int j2 = (j1 - 1); j2 < (j1 + 2); j2++) {
+//                                    if (j2 >= 0 && j2 <= 7) {
+//                                        if(!button.getModel().isPressed()){
+//                                            button.doClick(0);
+//                                        }
+//                                    }
+//                                }
+//                            }
+//                        }
+//
+//                    }
                 });
                 mineClick[i][j] = button;
 //                if (gameBoard[i][j] != -1) {
@@ -206,17 +245,17 @@ public class MinesweeperGUI extends JFrame implements KeyListener {
 
     @Override
     public void keyTyped(KeyEvent ke) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+       
     }
 
     @Override
     public void keyPressed(KeyEvent ke) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        ctrlPressed = ke.isControlDown();
     }
 
     @Override
     public void keyReleased(KeyEvent ke) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+       ctrlPressed = ke.isControlDown();
     }
 
 }

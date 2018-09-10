@@ -5,15 +5,19 @@
  */
 package Mines;
 
+import javax.swing.UIManager;
+
 /**
  *
  * @author cstuser
  */
-public class Main extends MinesweeperGUI {
+public class Main{
   
     public static void main(String[] args) {
 
-        MinesweeperGUI window = new MinesweeperGUI();
+        
+        
+        MainWindow window = new MainWindow();
         window.setVisible(true);
  
     }

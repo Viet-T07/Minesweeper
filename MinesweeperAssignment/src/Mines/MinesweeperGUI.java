@@ -11,13 +11,16 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
 import javax.swing.*;
 
 /**
  *
  * @author cstuser
  */
-public class MinesweeperGUI extends JFrame implements KeyListener {
+public class MinesweeperGUI extends JFrame implements KeyListener, WindowListener {
 
     private JButton startButton;
     private JLabel gamesWon;
@@ -33,6 +36,7 @@ public class MinesweeperGUI extends JFrame implements KeyListener {
     private int[][] gameBoard;
     private boolean DEBUG_MODE;
     private boolean ctrlPressed = false;
+ 
 
     private JButton[][] mineClick = new JButton[8][8];
 
@@ -74,6 +78,7 @@ public class MinesweeperGUI extends JFrame implements KeyListener {
                 window.setVisible(true);
                 displayMessage("Game In Progress");
 
+                window.addWindowListener(window);
             }
 
         });
@@ -106,28 +111,45 @@ public class MinesweeperGUI extends JFrame implements KeyListener {
                 }
                 int i1 = i;
                 int j1 = j;
-                
-                
+
                 setFocusable(true);
                 addKeyListener(this);
-                
+
                 button.addKeyListener(this);
-                
-                
-                
+
                 button.addActionListener((ActionEvent e) -> {
-                    
-                    if(ctrlPressed){
+
+                    if (ctrlPressed && button.getText().isEmpty()) {
                         button.setText("Mine!");
-                    }
-                    else if(ctrlPressed && button.getText() != null){
+                    } 
+                    else if (ctrlPressed && button.getText().contains("Mine!")) {
                         button.setText("");
+                    } 
+                    else if (gameBoard[i1][j1] == 0) {
+                        button.setText("");
+                        
+                       button.getModel().setPressed(true);
+                       mineClick[i1][j1].setEnabled(false);
+                        
+                        
+                        for (int i2 = (i1 - 1); i2 < (i1 + 2); i2++) {
+                            if (i2 >= 0 && i2 <= 7) {
+                                for (int j2 = (j1 - 1); j2 < (j1 + 2); j2++) {
+                                    if (j2 >= 0 && j2 <= 7) {
+                                        if (!mineClick[i2][j2].getModel().isPressed()) {
+//                                            mineClick[i2][j2].getModel().setPressed(true);
+                                            mineClick[i2][j2].doClick(0);
+                                            mineClick[i2][j2].setEnabled(false);
+                                            
+                                        }
+                                    }
+                                }
+                            }
+                        }
                     }
-                    
-                    
-                    
                     else if (gameBoard[i1][j1] != -1 && gameBoard[i1][j1] != 0) {
                         button.setText(String.valueOf(gameBoard[i1][j1]));
+                        mineClick[i1][j1].setEnabled(false);
                     } 
                     else if (gameBoard[i1][j1] == -1) {
                         button.setText("Mine");
@@ -142,22 +164,8 @@ public class MinesweeperGUI extends JFrame implements KeyListener {
                                 }
                             }
                         }
-                    } 
-//                    else if (gameBoard[i1][j1] == 0) {
-//                        button.setText("");
-//                        for (int i2 = (i1 - 1); i2 < (i1 + 2); i2++) {
-//                            if (i2 >= 0 && i2 <= 7) {
-//                                for (int j2 = (j1 - 1); j2 < (j1 + 2); j2++) {
-//                                    if (j2 >= 0 && j2 <= 7) {
-//                                        if(!button.getModel().isPressed()){
-//                                            button.doClick(0);
-//                                        }
-//                                    }
-//                                }
-//                            }
-//                        }
-//
-//                    }
+                    }
+
                 });
                 mineClick[i][j] = button;
 //                if (gameBoard[i][j] != -1) {
@@ -165,10 +173,10 @@ public class MinesweeperGUI extends JFrame implements KeyListener {
 //                }
             }
         }
-
+        
         setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-
-        displayMessage("No game open");
+        
+        
 
     }
 
@@ -241,11 +249,12 @@ public class MinesweeperGUI extends JFrame implements KeyListener {
         if (instance != null) {
             instance.gameStatus.setText(message);
         }
+
     }
 
     @Override
     public void keyTyped(KeyEvent ke) {
-       
+
     }
 
     @Override
@@ -255,7 +264,13 @@ public class MinesweeperGUI extends JFrame implements KeyListener {
 
     @Override
     public void keyReleased(KeyEvent ke) {
-       ctrlPressed = ke.isControlDown();
+        ctrlPressed = ke.isControlDown();
+    }
+
+
+    @Override
+    public void windowClosed(WindowEvent e) {
+        instance = null;
     }
 
 }

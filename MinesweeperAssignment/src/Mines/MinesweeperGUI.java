@@ -12,6 +12,15 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.io.File;
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
+import javax.sound.sampled.LineUnavailableException;
+import javax.sound.sampled.UnsupportedAudioFileException;
 import javax.swing.*;
 
 /**
@@ -117,6 +126,15 @@ public class MinesweeperGUI extends JFrame implements KeyListener {
                     else if (gameBoard[i1][j1] == -1) {
                         button.setText("Mine");
                         MainWindow.lostCounter ++;
+                        try {
+                            playLoseSound();
+                        } catch (UnsupportedAudioFileException ex) {
+                            Logger.getLogger(MinesweeperGUI.class.getName()).log(Level.SEVERE, null, ex);
+                        } catch (IOException ex) {
+                            Logger.getLogger(MinesweeperGUI.class.getName()).log(Level.SEVERE, null, ex);
+                        } catch (LineUnavailableException ex) {
+                            Logger.getLogger(MinesweeperGUI.class.getName()).log(Level.SEVERE, null, ex);
+                        }
                         MainWindow.gameStatus.setText("No instance found");
                         MainWindow.gamesLost.setText("Games Lost : " + MainWindow.lostCounter);
                         setVisible(false);
@@ -201,6 +219,20 @@ public class MinesweeperGUI extends JFrame implements KeyListener {
         }
 
     }
+    
+    
+    public void playLoseSound() throws UnsupportedAudioFileException, IOException, LineUnavailableException{
+       
+        File wavFile = new File("Thehighground.wav");
+        AudioInputStream ais = AudioSystem.getAudioInputStream(wavFile);
+        Clip clip = AudioSystem.getClip();
+        clip.open(ais);
+        clip.start();
+       
+    }
+    
+    
+    
 
 
     @Override

@@ -96,7 +96,7 @@ public class MainWindow extends JFrame {
         cbMenuItem.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                System.out.println(MinesweeperGUI.DEBUG_MODE);
+               
                 MinesweeperGUI.DEBUG_MODE = !MinesweeperGUI.DEBUG_MODE;
                 
             }

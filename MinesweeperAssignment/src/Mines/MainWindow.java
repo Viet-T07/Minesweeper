@@ -1,8 +1,4 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+
 package Mines;
 
 
@@ -15,7 +11,7 @@ import javax.swing.*;
 
 /**
  *
- * @author Admin
+ * @author Viet tran
  */
 public class MainWindow extends JFrame {
     
@@ -32,7 +28,6 @@ public class MainWindow extends JFrame {
     public static JLabel gamesWon;
     public static JLabel gamesLost;
     public static JLabel gameStatus;
-    
     public static int winCounter;
     public static int lostCounter;
 
@@ -43,30 +38,34 @@ public class MainWindow extends JFrame {
         super("MineSweeper");
         //Make the start menu window 400 x 400
         setSize(400, 400);
-
+        
+        //Call on the menu method
         menu();
+        //Set the menu bar on the main window
         setJMenuBar(menuBar);
+        
         //Initialize JLabels and the start button
         startButton = new JButton("Start Game");
         gamesWon = new JLabel(" Games Won :  " + winCounter);
         gamesLost = new JLabel(" Games Lost :  " + lostCounter);
         gameStatus = new JLabel(" No instance found");
-
-        JPanel start = new JPanel();
-        start.add(startButton);
+        
 
         //Initialize the container 
         Container pane = getContentPane();
 
-        //Adding all the elements to the pane
+        //Add a layout to the pane
         pane.setLayout(new GridLayout(4, 1));
-
+        
+        //Add diverse elements to the pane
         pane.add(startButton);
         pane.add(gamesWon);
         pane.add(gamesLost);
         pane.add(gameStatus);
-
+        
+        //Add an action listener to the start button
         startButton.addActionListener(new ActionListener() {
+            //method that opens the game window
             @Override
             public void actionPerformed(ActionEvent e) {
                 MinesweeperGUI window = new MinesweeperGUI("Minesweeper", 800, 800);
@@ -78,11 +77,12 @@ public class MainWindow extends JFrame {
         });
 
         instance = this;
+        //Set the window to terminate the process on close
         setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         
     }
     
-    
+    //Creat the menu
     public void menu() {
         menuBar = new JMenuBar();
 

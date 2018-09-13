@@ -1,22 +1,18 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+
 package Mines;
 
-import javax.swing.UIManager;
 
 /**
  *
- * @author cstuser
+ * @author Viet Tran
+ * Date: September 16 2018
+ * Purpose: create a minesweeper game
  */
 public class Main{
   
     public static void main(String[] args) {
 
-        
-        
+
         MainWindow window = new MainWindow();
         window.setVisible(true);
  

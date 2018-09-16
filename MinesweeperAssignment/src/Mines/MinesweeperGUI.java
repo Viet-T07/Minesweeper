@@ -29,7 +29,10 @@ public class MinesweeperGUI extends JFrame implements KeyListener {
     private int[][] gameBoard;
     public static boolean DEBUG_MODE = false;
     private boolean ctrlPressed = false;
-    private JButton[][] mineClick = new JButton[8][8];
+    private int columnLength = 8;
+    private int rowLength = 8;
+    
+    private JButton[][] mineClick = new JButton[columnLength][rowLength];
     private static int numOfClicks;
     
     
@@ -46,14 +49,14 @@ public class MinesweeperGUI extends JFrame implements KeyListener {
         //Creating a container for the game board
         Container pane = getContentPane();
         //Set the layout of the container
-        pane.setLayout(new GridLayout(8, 8));
+        pane.setLayout(new GridLayout(columnLength, rowLength));
         
         //Call on the method that will create a gameboard for the backend
         board();
         //Outer loop that will create the columns of the GUI
-        for (int xCoordinate = 0; xCoordinate < 8; xCoordinate++) {
+        for (int xCoordinate = 0; xCoordinate < columnLength; xCoordinate++) {
             //Inner loop that will create the rows of the GUI
-            for (int yCoordinate = 0; yCoordinate < 8; yCoordinate++) {
+            for (int yCoordinate = 0; yCoordinate < rowLength; yCoordinate++) {
                 //Create a Jbutton
                 JButton button = new JButton();
                 //Add the button to the container
@@ -101,11 +104,11 @@ public class MinesweeperGUI extends JFrame implements KeyListener {
                         //Outer loop cycles through the colums that are found next to the 0
                         for (int x = (column - 1); x < (column + 2); x++) {
                             //Verifies that the loop does not go out of bound
-                            if (x >= 0 && x <= 7) {
+                            if (x >= 0 && x < columnLength) {
                                 //Inner loop that cycles throug the rows located above and below from the 0 
                                 for (int y = (row - 1); y < (row + 2); y++) {
                                     //Verifies that the loop does not go out of bound
-                                    if (y >= 0 && y <= 7) {
+                                    if (y >= 0 && y < rowLength) {
                                         //Statement that check if the button is pressed
                                         if (!mineClick[x][y].getModel().isPressed()) {
                                             //Click the buttons around the 0
@@ -145,40 +148,42 @@ public class MinesweeperGUI extends JFrame implements KeyListener {
                         } catch (LineUnavailableException ex) {
                             Logger.getLogger(MinesweeperGUI.class.getName()).log(Level.SEVERE, null, ex);
                         }
-                        //Set the main window text
-                        MainWindow.gameStatus.setText("No instance found");
                         //Update the text on the main window
                         MainWindow.gamesLost.setText("Games Lost : " + MainWindow.lostCounter);
-                        //Close the game window
-                        setVisible(false);
+
                         //Outer loop that cycles through the columns
-                        for (int h = 0; h < 8; h++) {
+                        for (int h = 0; h < columnLength; h++) {
                             //Inner loop that cycles through the rows
-                            for (int k = 0; k < 8; k++) {
+                            for (int k = 0; k < rowLength; k++) {
                                 
-                                if (mineClick[h][k].getText().isEmpty()) {
-                                    //Set the specified text to mine if the value of that tile is -1
+
                                     if (gameBoard[h][k] == -1) {
                                         mineClick[h][k].setText("Mine");
                                     }
                                     //Disable all the tiles
                                     mineClick[h][k].setEnabled(false);
 
-                                }
                             }
                         }
                     }
                     //Verify if the win condition is met 
                     if (numOfClicks == 10) {
-                        //Close the game window
-                        setVisible(false);
                         //Increment the win counter
                         MainWindow.winCounter++;
                         
                         //Update the text of the main window
-                        MainWindow.gameStatus.setText("No instance found");
                         MainWindow.gamesWon.setText("Games won : " + MainWindow.winCounter);
                         
+                               //Outer loop that cycles through the columns
+                        for (int h = 0; h < columnLength; h++) {
+                            //Inner loop that cycles through the rows
+                            for (int k = 0; k < rowLength; k++) {
+                                    //Disable all the tiles
+                                    mineClick[h][k].setEnabled(false);
+
+                                
+                            }
+                        }   
                         //Play the win sound
                         try {
                             playWinSound();
@@ -193,36 +198,38 @@ public class MinesweeperGUI extends JFrame implements KeyListener {
                     }
 
                 });
-                //Add a window Listener to the game window
-                this.addWindowListener(new WindowAdapter() {
+
+                //Fill the double array of buttons with buttons 
+                mineClick[xCoordinate][yCoordinate] = button;
+                
+                //Method that allows the user to view all of the numbers on the board
+                if (gameBoard[xCoordinate][yCoordinate] != -1 && DEBUG_MODE) {
+                    button.setText(String.valueOf(gameBoard[xCoordinate][yCoordinate]));
+                }
+            }
+        }
+        this.addWindowListener(new WindowAdapter() {
                     //If the window is closed changed the message
                     @Override
                     public void windowClosed(WindowEvent we) {
                         MainWindow.gameStatus.setText("No instance found");
+                        MainWindow.startButton.setEnabled(true);
                     }
 
-                });
-                //Fill the double array of buttons with buttons 
-                mineClick[xCoordinate][yCoordinate] = button;
-                
-//                //Method that allows the user to view all of the numbers on the board
-//                if (gameBoard[xCoordinate][yCoordinate] != -1 && DEBUG_MODE) {
-//                    button.setText(String.valueOf(gameBoard[xCoordinate][yCoordinate]));
-//                }
-            }
-        }
+        });
         //When the window is closed the process terminates
         setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+        
 
     }
 
     public void board() {
 
         //Creating a gameboard to determine whether the outcome of the game
-        gameBoard = new int[8][8];
+        gameBoard = new int[columnLength][rowLength];
 
-        //Initialize the variable that will increment if there are  mines around the tile
-        //Initialize the loop variable
+        /*Initialize the variable that will increment if there are  mines around the tile
+        Initialize the loop variable*/
         int k = 0;
         //Add 10 mines to the gameBoard
         while (k < 10) {
@@ -236,11 +243,11 @@ public class MinesweeperGUI extends JFrame implements KeyListener {
                 //Loop that checks the different columns
                 for (int column = (xCoordinate - 1); column < (xCoordinate + 2); column++) {
                     //Verifies that the x coordinate does not go out of bounds
-                    if (column >= 0 && column <= 7) {
+                    if (column >= 0 && column < columnLength) {
                         //Loop that checks the different rows
                         for (int row = (yCoordinate - 1); row < (yCoordinate + 2); row++) {
                             //Verifies that the y coordinate does not go out of bounds
-                            if (row >= 0 && row <= 7) {
+                            if (row >= 0 && row < rowLength) {
                                 //Increment the cell by 1 as long as the tile does not contain the value of -1
                                 if (gameBoard[column][row] != -1) {
                                     gameBoard[column][row] += 1;
@@ -271,7 +278,7 @@ public class MinesweeperGUI extends JFrame implements KeyListener {
     //Method that allows the import of sound files
     public void playWinSound() throws UnsupportedAudioFileException, IOException, LineUnavailableException {
 
-        File wavFile = new File("ReadyForThis.wav");
+        File wavFile = new File("OP4WINS.wav");
         try (AudioInputStream ais = AudioSystem.getAudioInputStream(wavFile)) {
             Clip clip = AudioSystem.getClip();
             clip.open(ais);

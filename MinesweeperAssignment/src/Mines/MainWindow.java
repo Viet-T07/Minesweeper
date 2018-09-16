@@ -17,7 +17,7 @@ public class MainWindow extends JFrame {
     private JCheckBoxMenuItem cbMenuItem;
     private JMenu menu;
     private static MainWindow instance = null;
-    private JButton startButton;
+    public static JButton startButton;
     public static JLabel gamesWon;
     public static JLabel gamesLost;
     public static JLabel gameStatus;
@@ -60,6 +60,7 @@ public class MainWindow extends JFrame {
                 MinesweeperGUI window = new MinesweeperGUI("Minesweeper", 800, 800);
                 window.setVisible(true);
                 displayMessage("Game In Progress");
+                
 
             }
 
@@ -102,6 +103,7 @@ public class MainWindow extends JFrame {
     public static void displayMessage(String message) {
         if (instance != null) {
             instance.gameStatus.setText(message);
+            startButton.setEnabled(false);
         }
 
     }

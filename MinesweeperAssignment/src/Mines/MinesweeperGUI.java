@@ -202,10 +202,10 @@ public class MinesweeperGUI extends JFrame implements KeyListener {
                 //Fill the double array of buttons with buttons 
                 mineClick[xCoordinate][yCoordinate] = button;
                 
-                //Method that allows the user to view all of the numbers on the board
-                if (gameBoard[xCoordinate][yCoordinate] != -1 && DEBUG_MODE) {
-                    button.setText(String.valueOf(gameBoard[xCoordinate][yCoordinate]));
-                }
+//                //Method that allows the user to view all of the numbers on the board
+//                if (gameBoard[xCoordinate][yCoordinate] != -1 && DEBUG_MODE) {
+//                    button.setText(String.valueOf(gameBoard[xCoordinate][yCoordinate]));
+//                }
             }
         }
         this.addWindowListener(new WindowAdapter() {
@@ -266,7 +266,7 @@ public class MinesweeperGUI extends JFrame implements KeyListener {
     //Method that allows the import of sound files
     public void playLostSound() throws UnsupportedAudioFileException, IOException, LineUnavailableException {
         
-        File wavFile = new File("Exclamation.wav");
+        File wavFile = new File("MissionFailed.wav");
         try (AudioInputStream ais = AudioSystem.getAudioInputStream(wavFile)) {
             Clip clip = AudioSystem.getClip();
             clip.open(ais);

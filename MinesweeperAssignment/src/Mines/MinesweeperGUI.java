@@ -264,6 +264,7 @@ public class MinesweeperGUI extends JFrame implements KeyListener {
             Clip clip = AudioSystem.getClip();
             clip.open(ais);
             clip.start();
+            ais.close();
         }
 
     }
@@ -275,6 +276,7 @@ public class MinesweeperGUI extends JFrame implements KeyListener {
             Clip clip = AudioSystem.getClip();
             clip.open(ais);
             clip.start();
+            ais.close();
         }
 
     }

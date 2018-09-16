@@ -145,6 +145,8 @@ public class MinesweeperGUI extends JFrame implements KeyListener {
                         } catch (LineUnavailableException ex) {
                             Logger.getLogger(MinesweeperGUI.class.getName()).log(Level.SEVERE, null, ex);
                         }
+                        //Set the main window text
+                        MainWindow.gameStatus.setText("No instance found");
                         //Update the text on the main window
                         MainWindow.gamesLost.setText("Games Lost : " + MainWindow.lostCounter);
                         //Close the game window
@@ -203,10 +205,10 @@ public class MinesweeperGUI extends JFrame implements KeyListener {
                 //Fill the double array of buttons with buttons 
                 mineClick[xCoordinate][yCoordinate] = button;
                 
-                //Method that allows the user to view all of the numbers on the board
-                if (gameBoard[xCoordinate][yCoordinate] != -1 && DEBUG_MODE) {
-                    button.setText(String.valueOf(gameBoard[xCoordinate][yCoordinate]));
-                }
+//                //Method that allows the user to view all of the numbers on the board
+//                if (gameBoard[xCoordinate][yCoordinate] != -1 && DEBUG_MODE) {
+//                    button.setText(String.valueOf(gameBoard[xCoordinate][yCoordinate]));
+//                }
             }
         }
         //When the window is closed the process terminates
@@ -252,44 +254,28 @@ public class MinesweeperGUI extends JFrame implements KeyListener {
             }
 
         }
-
-//        for (int Column = 0; Column < 8; Column++) {
-//            for (int row = 0; row < 8; row++) {
-//                if (gameBoard[Column][row] == -1) {
-//                    for (int i1 = (Column - 1); i1 < (Column + 2); i1++) {
-//                        if (i1 >= 0 && i1 <= 7) {
-//                            for (int j1 = (row - 1); j1 < (row + 2); j1++) {
-//                                if (j1 >= 0 && j1 <= 7) {
-//                                    if (gameBoard[i1][j1] != -1) {
-//                                        gameBoard[i1][j1] += 1;
-//                                    }
-//                                }
-//                            }
-//                        }
-//                    }
-//                }
-//            }
-//        }
     }
     
     //Method that allows the import of sound files
     public void playLostSound() throws UnsupportedAudioFileException, IOException, LineUnavailableException {
         
         File wavFile = new File("Exclamation.wav");
-        AudioInputStream ais = AudioSystem.getAudioInputStream(wavFile);
-        Clip clip = AudioSystem.getClip();
-        clip.open(ais);
-        clip.start();
+        try (AudioInputStream ais = AudioSystem.getAudioInputStream(wavFile)) {
+            Clip clip = AudioSystem.getClip();
+            clip.open(ais);
+            clip.start();
+        }
 
     }
     //Method that allows the import of sound files
     public void playWinSound() throws UnsupportedAudioFileException, IOException, LineUnavailableException {
 
         File wavFile = new File("ReadyForThis.wav");
-        AudioInputStream ais = AudioSystem.getAudioInputStream(wavFile);
-        Clip clip = AudioSystem.getClip();
-        clip.open(ais);
-        clip.start();
+        try (AudioInputStream ais = AudioSystem.getAudioInputStream(wavFile)) {
+            Clip clip = AudioSystem.getClip();
+            clip.open(ais);
+            clip.start();
+        }
 
     }
 
@@ -297,12 +283,12 @@ public class MinesweeperGUI extends JFrame implements KeyListener {
     public void keyTyped(KeyEvent ke) {
 
     }
-
+    //Method that changes the value of ctrlPressed if the button is pressed
     @Override
     public void keyPressed(KeyEvent ke) {
         ctrlPressed = ke.isControlDown();
     }
-
+    //Method that changes the value of ctrlPressed if the button is released
     @Override
     public void keyReleased(KeyEvent ke) {
         ctrlPressed = ke.isControlDown();
